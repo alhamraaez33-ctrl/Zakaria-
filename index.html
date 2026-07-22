@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>ZAKARIA CONTROL CENTER</title>
+
+<style>
+
+body{
+margin:0;
+background:#020202;
+color:#00ff88;
+font-family:Arial;
+overflow:hidden;
+}
+
+
+/* الخلفية */
+
+body::before{
+
+content:"";
+position:fixed;
+width:100%;
+height:100%;
+
+background:
+linear-gradient(#00ff8820 1px,transparent 1px),
+linear-gradient(90deg,#00ff8820 1px,transparent 1px);
+
+background-size:40px 40px;
+
+animation:grid 5s linear infinite;
+
+z-index:-1;
+
+}
+
+
+@keyframes grid{
+
+from{transform:translateY(0);}
+to{transform:translateY(40px);}
+
+}
+
+
+
+/* شاشة الإقلاع */
+
+
+#boot,
+#welcome,
+#scan{
+
+height:100vh;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+text-align:center;
+
+}
+
+
+
+.logo{
+
+font-size:45px;
+
+animation:logo 2s infinite;
+
+}
+
+
+
+@keyframes logo{
+
+0%{
+opacity:.2;
+transform:scale(.8);
+}
+
+50%{
+opacity:1;
+transform:scale(1.1);
+}
+
+100%{
+opacity:.2;
+transform:scale(.8);
+}
+
+}
+
+
+
+
+.loading{
+
+width:400px;
+
+height:25px;
+
+border:2px solid #00ff88;
+
+}
+
+
+#bar{
+
+height:100%;
+
+width:0%;
+
+background:#00ff88;
+
+}
+
+
+
+#percent{
+
+font-size:25px;
+
+}
+
+
+
+#welcome,
+#scan,
+#main{
+
+display:none;
+
+}
+
+
+
+
+/* اللوحة */
+
+.box{
+
+width:550px;
+
+margin:70px auto;
+
+padding:30px;
+
+border:2px solid #00ff88;
+
+border-radius:20px;
+
+text-align:center;
+
+background:#000000aa;
+
+box-shadow:0 0 30px #00ff88;
+
+}
+
+
+
+.light{
+
+display:inline-block;
+
+width:12px;
+
+height:12px;
+
+background:#00ff88;
+
+border-radius:50%;
+
+box-shadow:0 0 20px #00ff88;
+
+animation:blink 1s infinite;
+
+}
+
+
+
+@keyframes blink{
+
+50%{
+opacity:.3;
+}
+
+}
+
+
+
+button{
+
+background:black;
+
+color:#00ff88;
+
+border:1px solid #00ff88;
+
+padding:12px;
+
+margin:8px;
+
+cursor:pointer;
+
+}
+
+
+
+button:hover{
+
+background:#00ff88;
+
+color:black;
+
+}
+
+
+
+.card{
+
+border:1px solid #00ff88;
+
+padding:20px;
+
+margin-top:20px;
+
+box-shadow:0 0 15px #00ff88;
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+
+<!-- الاقلاع -->
+
+
+<div id="boot">
+
+<div class="logo">
+
+🛡 زكريا منير عياش
+
+</div>
+
+
+<h3 id="msg">
+Starting System...
+</h3>
+
+
+<div class="loading">
+
+<div id="bar"></div>
+
+</div>
+
+
+<div id="percent">
+0%
+</div>
+
+
+</div>
+
+
+
+
+
+<!-- الترحيب -->
+
+
+<div id="welcome">
+
+<h1>
+👋 مرحباً
+</h1>
+
+<h2>
+زكريا منير عياش
+</h2>
+
+
+<h3>
+CONTROL CENTER READY
+</h3>
+
+
+</div>
+
+
+
+
+
+<!-- الفحص -->
+
+
+<div id="scan">
+
+<h2>
+🔍 جاري فحص النظام
+</h2>
+
+<h3 id="scanText">
+Starting...
+</h3>
+
+
+</div>
+
+
+
+
+
+<!-- النظام -->
+
+
+<div id="main">
+
+
+<div class="box">
+
+
+<h1>
+ZAKARIA CONTROL CENTER
+</h1>
+
+
+<h2>
+SYSTEM ONLINE
+<span class="light"></span>
+</h2>
+
+
+<h3 id="clock"></h3>
+
+
+
+<button onclick="openPage('services')">
+🛡 الخدمات
+</button>
+
+
+<button onclick="openPage('prices')">
+💰 الأسعار
+</button>
+
+
+<button onclick="openPage('contact')">
+📞 التواصل
+</button>
+
+
+
+<div id="page"></div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<script>
+
+
+// التحميل
+
+
+let p=0;
+
+
+let timer=setInterval(()=>{
+
+
+p++;
+
+
+bar.style.width=p+"%";
+
+percent.innerHTML=p+"%";
+
+
+if(p>=100){
+
+
+clearInterval(timer);
+
+
+boot.style.display="none";
+
+
+welcome.style.display="flex";
+
+
+setTimeout(()=>{
+
+
+welcome.style.display="none";
+
+scan.style.display="flex";
+
+
+startScan();
+
+
+},3000);
+
+
+}
+
+
+},40);
+
+
+
+
+
+
+// الفحص
+
+
+function startScan(){
+
+
+let list=[
+
+"Checking Security...",
+"Loading Services...",
+"Connecting Network...",
+"SYSTEM READY 🟢"
+
+];
+
+
+let i=0;
+
+
+let t=setInterval(()=>{
+
+
+scanText.innerHTML=list[i];
+
+
+i++;
+
+
+if(i>=list.length){
+
+
+clearInterval(t);
+
+
+setTimeout(()=>{
+
+
+scan.style.display="none";
+
+main.style.display="block";
+
+
+},1000);
+
+
+}
+
+
+},1000);
+
+
+}
+
+
+
+
+
+
+// الساعة
+
+
+function clock(){
+
+
+document.getElementById("clock").innerHTML=
+
+new Date().toLocaleTimeString();
+
+
+}
+
+
+setInterval(clock,1000);
+
+clock();
+
+
+
+
+
+
+// الصفحات
+
+
+function openPage(x){
+
+
+let page=document.getElementById("page");
+
+
+
+if(x=="services"){
+
+
+page.innerHTML=
+
+`
+<div class="card">
+
+🛡 الخدمات
+
+<br><br>
+
+تحليل رقمي
+
+<br>
+
+استشارات
+
+<br>
+
+توعية
+
+</div>
+`;
+
+}
+
+
+
+
+if(x=="prices"){
+
+
+page.innerHTML=
+
+`
+<div class="card">
+
+💰 الأسعار
+
+<br><br>
+
+حسب نوع الخدمة
+
+</div>
+`;
+
+}
+
+
+
+
+if(x=="contact"){
+
+
+page.innerHTML=
+
+`
+<div class="card">
+
+📞 التواصل
+
+<br><br>
+
+WhatsApp
+
+<br>
+
+Telegram
+
+</div>
+`;
+
+}
+
+
+}
+
+
+
+</script>
+
+
+</body>
+
+</html>
